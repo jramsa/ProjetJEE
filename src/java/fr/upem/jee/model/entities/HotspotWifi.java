@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Entities;
+package fr.upem.jee.model.entities;
 
 import java.io.Serializable;
 import javax.persistence.Basic;
@@ -26,40 +26,46 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Table(name = "hotspot_wifi", catalog = "projetJEE", schema = "")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "HotspotWifi.findAll", query = "SELECT h FROM HotspotWifi h")
-    , @NamedQuery(name = "HotspotWifi.findById", query = "SELECT h FROM HotspotWifi h WHERE h.id = :id")})
+    @NamedQuery(name = "HotspotWifi.findAll", query = "SELECT h FROM HotspotWifi h"),
+    @NamedQuery(name = "HotspotWifi.findById", query = "SELECT h FROM HotspotWifi h WHERE h.id = :id")})
 public class HotspotWifi implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    
     @Id
     @Basic(optional = false)
     @NotNull
     @Column(name = "id")
     private Integer id;
+    
     @Basic(optional = false)
     @NotNull
     @Lob
     @Size(min = 1, max = 65535)
     @Column(name = "site_name")
     private String siteName;
+    
     @Basic(optional = false)
     @NotNull
     @Lob
     @Size(min = 1, max = 65535)
     @Column(name = "address")
     private String address;
+    
     @Basic(optional = false)
     @NotNull
     @Lob
     @Size(min = 1, max = 65535)
     @Column(name = "site_code")
     private String siteCode;
+    
     @Basic(optional = false)
     @NotNull
     @Lob
     @Size(min = 1, max = 65535)
     @Column(name = "district")
     private String district;
+    
     @Basic(optional = false)
     @NotNull
     @Lob
