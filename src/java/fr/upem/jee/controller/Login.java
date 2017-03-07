@@ -35,15 +35,15 @@ public class Login {
         this.password = password;
     }
     
-	public void login(){
+	public String connect(){
 		User user = LoginDAO.findUser(login);
 		
-		if(user != null & user.getPassword() == SecurityManager.sha1(password)) {
+		if(user != null & user.getPassword().equals(SecurityManager.sha1(password))) {
 			// create session
 			ApplicationManager.getSession().setAttribute("user", user);
-			// redirect
+			return "main";
 		} else {
-			// growl
+			return "index";
 		}
 	}
 	
