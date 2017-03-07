@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Entities;
+package fr.upem.jee.model.entities;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -30,46 +30,53 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Table(name = "history", catalog = "projetJEE", schema = "")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "History.findAll", query = "SELECT h FROM History h")
-    , @NamedQuery(name = "History.findById", query = "SELECT h FROM History h WHERE h.id = :id")
-    , @NamedQuery(name = "History.findByUser", query = "SELECT h FROM History h WHERE h.user = :user")
-    , @NamedQuery(name = "History.findByDate", query = "SELECT h FROM History h WHERE h.date = :date")
-    , @NamedQuery(name = "History.findByType", query = "SELECT h FROM History h WHERE h.type = :type")
-    , @NamedQuery(name = "History.findBySearch", query = "SELECT h FROM History h WHERE h.search = :search")
-    , @NamedQuery(name = "History.findByRange", query = "SELECT h FROM History h WHERE h.range = :range")
-    , @NamedQuery(name = "History.findByBookmarked", query = "SELECT h FROM History h WHERE h.bookmarked = :bookmarked")})
+    @NamedQuery(name = "History.findAll", query = "SELECT h FROM History h"),
+    @NamedQuery(name = "History.findById", query = "SELECT h FROM History h WHERE h.id = :id"),
+    @NamedQuery(name = "History.findByUser", query = "SELECT h FROM History h WHERE h.user = :user"),
+    @NamedQuery(name = "History.findByDate", query = "SELECT h FROM History h WHERE h.date = :date"),
+    @NamedQuery(name = "History.findByType", query = "SELECT h FROM History h WHERE h.type = :type"),
+    @NamedQuery(name = "History.findBySearch", query = "SELECT h FROM History h WHERE h.search = :search"),
+    @NamedQuery(name = "History.findByRange", query = "SELECT h FROM History h WHERE h.range = :range"),
+    @NamedQuery(name = "History.findByBookmarked", query = "SELECT h FROM History h WHERE h.bookmarked = :bookmarked")})
 public class History implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "id")
     private Integer id;
+    
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 64)
     @Column(name = "user")
     private String user;
+    
     @Basic(optional = false)
     @NotNull
     @Column(name = "date")
     @Temporal(TemporalType.DATE)
     private Date date;
+    
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 7)
     @Column(name = "type")
     private String type;
+    
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 256)
     @Column(name = "search")
     private String search;
+    
     @Basic(optional = false)
     @NotNull
     @Column(name = "range")
     private int range;
+    
     @Basic(optional = false)
     @NotNull
     @Column(name = "bookmarked")
@@ -172,5 +179,5 @@ public class History implements Serializable {
     public String toString() {
         return "Entities.History[ id=" + id + " ]";
     }
-    
+
 }

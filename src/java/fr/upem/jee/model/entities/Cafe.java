@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Entities;
+package fr.upem.jee.model.entities;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -32,56 +32,65 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Table(name = "cafe", catalog = "projetJEE", schema = "")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Cafe.findAll", query = "SELECT c FROM Cafe c")
-    , @NamedQuery(name = "Cafe.findById", query = "SELECT c FROM Cafe c WHERE c.id = :id")
-    , @NamedQuery(name = "Cafe.findByDate", query = "SELECT c FROM Cafe c WHERE c.date = :date")
-    , @NamedQuery(name = "Cafe.findByCounterPrice", query = "SELECT c FROM Cafe c WHERE c.counterPrice = :counterPrice")
-    , @NamedQuery(name = "Cafe.findByIndoorPrice", query = "SELECT c FROM Cafe c WHERE c.indoorPrice = :indoorPrice")
-    , @NamedQuery(name = "Cafe.findByOutdoorPrice", query = "SELECT c FROM Cafe c WHERE c.outdoorPrice = :outdoorPrice")})
+    @NamedQuery(name = "Cafe.findAll", query = "SELECT c FROM Cafe c"),
+    @NamedQuery(name = "Cafe.findById", query = "SELECT c FROM Cafe c WHERE c.id = :id"),
+    @NamedQuery(name = "Cafe.findByDate", query = "SELECT c FROM Cafe c WHERE c.date = :date"),
+    @NamedQuery(name = "Cafe.findByCounterPrice", query = "SELECT c FROM Cafe c WHERE c.counterPrice = :counterPrice"),
+    @NamedQuery(name = "Cafe.findByIndoorPrice", query = "SELECT c FROM Cafe c WHERE c.indoorPrice = :indoorPrice"),
+    @NamedQuery(name = "Cafe.findByOutdoorPrice", query = "SELECT c FROM Cafe c WHERE c.outdoorPrice = :outdoorPrice")})
 public class Cafe implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "id")
     private Integer id;
+    
     @Basic(optional = false)
     @NotNull
     @Column(name = "date")
     @Temporal(TemporalType.DATE)
     private Date date;
+    
     @Basic(optional = false)
     @NotNull
     @Lob
     @Size(min = 1, max = 65535)
     @Column(name = "cafe_name")
     private String cafeName;
+    
     @Basic(optional = false)
     @NotNull
     @Lob
     @Size(min = 1, max = 65535)
     @Column(name = "address")
     private String address;
+    
     @Basic(optional = false)
     @NotNull
     @Lob
     @Size(min = 1, max = 65535)
     @Column(name = "district")
     private String district;
+    
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Basic(optional = false)
     @NotNull
     @Column(name = "counter_price")
     private BigDecimal counterPrice;
+    
     @Basic(optional = false)
     @NotNull
     @Column(name = "indoor_price")
     private BigDecimal indoorPrice;
+    
     @Basic(optional = false)
     @NotNull
     @Column(name = "outdoor_price")
     private BigDecimal outdoorPrice;
+    
     @Basic(optional = false)
     @NotNull
     @Lob
