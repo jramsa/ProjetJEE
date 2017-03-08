@@ -9,6 +9,7 @@
         <property name="Password" value="root"/>
         <property name="URL" value="jdbc:mysql://localhost:8889/projetJEE?zeroDateTimeBehavior=convertToNull"/>
         <property name="driverClass" value="com.mysql.jdbc.Driver"/>
+        <property name="eclipselink.target-server" value="Glassfish"/>
     </jdbc-connection-pool>
     <jdbc-resource enabled="true" jndi-name="java:app/projetJEE" object-type="user" pool-name="mysql_projetJEE_rootPool"/>
 </resources>
