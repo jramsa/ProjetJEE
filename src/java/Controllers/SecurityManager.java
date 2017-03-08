@@ -1,4 +1,4 @@
-package fr.upem.jee.tools;
+package Controllers;
 
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
