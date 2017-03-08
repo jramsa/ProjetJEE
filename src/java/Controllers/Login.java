@@ -7,10 +7,14 @@ package Controllers;
 
 import Entities.User;
 import Sessions.UserFacade;
+import java.io.IOException;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 import java.io.Serializable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
+import javax.faces.context.FacesContext;
 
 /**
  *
@@ -38,8 +42,13 @@ public class Login implements Serializable {
             String pass = this.getUser().getPassword();
             if (SecurityManager.sha1(pass).equals((tmp.getPassword()))) {
                 System.out.println("Vrai");
-                //ApplicationManager.getSession().setAttribute("user", user);
-                return "main.xhtml";
+                try {
+                    //ApplicationManager.getSession().setAttribute("user", user);
+                    FacesContext.getCurrentInstance().getExternalContext().redirect("faces/main.xhtml");
+                } catch (IOException ex) {
+                    Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                return "main";
             } else {
                 System.out.println("Faux 2");
                 return "index";
