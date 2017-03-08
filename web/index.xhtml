@@ -26,9 +26,9 @@
 			      		<p class="message">Already registered? <a href="#">Sign In</a></p>
 			    	</h:form>
 			    	<h:form class="login-form">
-			      		<p:inputText placeholder="username" />
-			      		<p:password  placeholder="password" />
-			      		<p:commandButton value="Login" />
+                                    <p:inputText placeholder="username" id="email" value ="#{login.user.email}" />
+                                    <p:password  placeholder="password" value ="#{login.user.password}"  />
+                                    <p:commandButton value="Login" action="#{login.connexion()}" />
 			      		<p class="message">Not registered? <a href="#">Create an account</a></p>
 			    	</h:form>
 			  	</div>
