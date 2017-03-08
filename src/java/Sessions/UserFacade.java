@@ -33,4 +33,13 @@ public class UserFacade extends AbstractFacade<User> {
         return em.find(User.class,u.getEmail());
     }
     
+    public int createUser(User u){
+        User tmp = em.find(User.class,u.getEmail());
+        if(tmp==null){
+            em.persist(u);
+            return 1;
+        }
+        return 0;
+    }
+    
 }

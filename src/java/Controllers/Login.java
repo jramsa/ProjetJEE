@@ -15,6 +15,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.faces.context.FacesContext;
+import org.primefaces.context.RequestContext;
 
 /**
  *
@@ -28,32 +29,77 @@ public class Login implements Serializable {
     UserFacade userFacade;
 
     private User user;
-    
+
+    private String password;
+
     public Login() {
         user = new User();
     }
 
     public String connexion() {
+        RequestContext context = RequestContext.getCurrentInstance();
         if (userFacade.findUser(this.getUser()) == null) {
             System.out.println("Faux 1");
+            context.execute("swal('Oups...','Utilisateur erroné','error')");
+            user.setFirstname("");
+            user.setLastname("");
+            user.setEmail("");
             return "index";
         } else {
             User tmp = userFacade.findUser(this.getUser());
-            String pass = this.getUser().getPassword();
-            if (SecurityManager.sha1(pass).equals((tmp.getPassword()))) {
+            setPassword(this.getUser().getPassword());
+            if (SecurityManager.sha1(getPassword()).equals((tmp.getPassword()))) {
                 System.out.println("Vrai");
+                //ApplicationManager.getSession().setAttribute("user", user);
                 try {
-                    //ApplicationManager.getSession().setAttribute("user", user);
                     FacesContext.getCurrentInstance().getExternalContext().redirect("faces/main.xhtml");
                 } catch (IOException ex) {
                     Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 return "main";
             } else {
+                user.setFirstname("");
+                user.setLastname("");
+                user.setEmail("");
+                context.execute("swal('Oups...','Password erroné','error')");
                 System.out.println("Faux 2");
                 return "index";
             }
-            
+
+        }
+    }
+
+    public String register() {
+        user.setPassword(SecurityManager.sha1(getPassword()));
+        RequestContext context = RequestContext.getCurrentInstance();
+        if (userFacade.findUser(this.getUser()) == null) {
+            System.out.println("creation user");
+            int created = userFacade.createUser(user);
+            if (created == 1) {
+                System.out.println("créé");
+                context.execute("swal('Félicitations','Utilisateur créé','success')");
+            } else {
+                System.out.println("non créé");
+                context.execute("swal('Oups...','Utilisateur non créé','error')");
+            }
+            user.setFirstname("");
+            user.setLastname("");
+            user.setEmail("");
+            try {
+                FacesContext.getCurrentInstance().getExternalContext().redirect("faces/index.xhtml");
+            } catch (IOException ex) {
+                Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            return "index";
+        } else {
+            System.out.println("Pas de création");
+            context.execute("swal('Oups...','Utilisateur existe créé','error')");
+            try {
+                FacesContext.getCurrentInstance().getExternalContext().redirect("faces/index.xhtml");
+            } catch (IOException ex) {
+                Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            return "index";
         }
     }
 
@@ -69,5 +115,19 @@ public class Login implements Serializable {
      */
     public void setUser(User user) {
         this.user = user;
+    }
+
+    /**
+     * @return the password
+     */
+    public String getPassword() {
+        return password;
+    }
+
+    /**
+     * @param password the password to set
+     */
+    public void setPassword(String password) {
+        this.password = password;
     }
 }
