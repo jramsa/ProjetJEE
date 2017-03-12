@@ -46,28 +46,30 @@
                             <p:inputText placeholder="Entrez un lieu" style="width:80%" id="address" />
                         </td>
                         <td class="colonne2">
-                            <p:selectOneMenu  style="width:80%">
+                            <p:selectOneMenu  style="width:80%" id="spot" value="#{viewBean.spot}">
                                 <f:selectItem itemLabel="S&eacute;lectionner un type" noSelectionOption="true" />
-                                <f:selectItem itemLabel="Caf&eacute;" itemValue="Café" />
-                                <f:selectItem itemLabel="Hotspot" itemValue="Hotspot" />
-                                <f:selectItem itemLabel="Caf&eacute; + Hotspot" itemValue="Café + Hotspot" />
+                                <f:selectItem itemLabel="Caf&eacute;" itemValue="cafe" />
+                                <f:selectItem itemLabel="Hotspot" itemValue="wifi" />
+                                <f:selectItem itemLabel="Caf&eacute; + Hotspot" itemValue="tous" />
                             </p:selectOneMenu>
                         </td>
                         <td class="colonne2">
-                            <p:selectOneMenu  style="width:80%">
+                            <p:selectOneMenu  style="width:80%" id="distance" value="#{viewBean.distance}">
                                 <f:selectItem itemLabel="S&eacute;lectionner une distance" noSelectionOption="true" />
-                                <f:selectItem itemLabel="+ proche" itemValue="+ proche" />
-                                <f:selectItem itemLabel="500 m" itemValue="500 m" />
-                                <f:selectItem itemLabel="1 km" itemValue="1 km" />
-                                <f:selectItem itemLabel="Tous" itemValue="Tous" />
+                                <f:selectItem itemLabel="+ proche" itemValue="proche" />
+                                <f:selectItem itemLabel="500 m" itemValue="500" />
+                                <f:selectItem itemLabel="1 km" itemValue="1km" />
+                                <f:selectItem itemLabel="Tous" itemValue="tous" />
                             </p:selectOneMenu>
                         </td>
                         <td class="colonne2" style="width:10%">
                             <h:outputText value="Favoris " class="texteDroite"/>
-                            <p:selectBooleanCheckbox />
+                            <p:selectBooleanCheckbox value="#{viewBean.check}" />
                         </td>
                         <td class="colonne2" style="width:15%">
-                            <p:commandButton value="Chercher" icon="ui-icon-search" onclick="geocode()" type="button" />
+                            <p:commandButton value="Chercher" icon="ui-icon-search" onclick="geocode()" type="button">
+                                <!--<f:actionListener binding="valeur" />-->
+                            </p:commandButton>
                         </td>
                     </tr>
                 </table><br/><br/>
