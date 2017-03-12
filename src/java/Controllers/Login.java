@@ -40,7 +40,7 @@ public class Login implements Serializable {
         RequestContext context = RequestContext.getCurrentInstance();
         if (userFacade.findUser(this.getUser()) == null) {
             System.out.println("Faux 1");
-            context.execute("swal('Oups...','Utilisateur erroné','error')");
+            context.execute("swal('Oups...','Utilisateur incorrect','error')");
             user.setFirstname("");
             user.setLastname("");
             user.setEmail("");
@@ -56,12 +56,13 @@ public class Login implements Serializable {
                 } catch (IOException ex) {
                     Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
                 }
+                setUser(tmp);
                 return "main";
             } else {
                 user.setFirstname("");
                 user.setLastname("");
                 user.setEmail("");
-                context.execute("swal('Oups...','Password erroné','error')");
+                context.execute("swal('Oups...','Password incorrect','error')");
                 System.out.println("Faux 2");
                 return "index";
             }
@@ -93,7 +94,7 @@ public class Login implements Serializable {
             return "index";
         } else {
             System.out.println("Pas de création");
-            context.execute("swal('Oups...','Utilisateur existe créé','error')");
+            context.execute("swal('Oups...','Utilisateur existe déjà','error')");
             try {
                 FacesContext.getCurrentInstance().getExternalContext().redirect("faces/index.xhtml");
             } catch (IOException ex) {
