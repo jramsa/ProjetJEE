@@ -74,7 +74,7 @@
 
                 <f:view contentType="text/html">
                     <p:gmap id="geoGmap" widgetVar="geoMap" center="48.866667, 2.333333" zoom="2" type="ROADMAP" style="width:100%;height:500px" model="#{map.geoModel}">
-                        <!--<p:ajax event="geocode" listener="#{map.onGeocode}" update="@this" />-->
+                        <p:ajax event="geocode" listener="#{map.onGeocode}" update="@this" />
                     </p:gmap>
                 </f:view>
 
