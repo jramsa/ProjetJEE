@@ -31,14 +31,11 @@ public class Map implements Serializable {
     }
      
     private MapModel geoModel;
-    private MapModel revGeoModel;
-    private String centerGeoMap = "41.850033, -87.6500523";
-    private String centerRevGeoMap = "41.850033, -87.6500523";
+    private String centerGeoMap = "48.85661400000001, 2.3522219000000177";
      
     @PostConstruct
     public void init() {
         geoModel = new DefaultMapModel();
-        revGeoModel = new DefaultMapModel();
     }
      
    
@@ -51,7 +48,7 @@ public class Map implements Serializable {
              
             for (int i = 0; i < results.size(); i++) {
                 GeocodeResult result = results.get(i);
-                geoModel.addOverlay(new Marker(result.getLatLng(), result.getAddress()));
+                //geoModel.addOverlay(new Marker(result.getLatLng(), result.getAddress()));
             }
         }
     }
@@ -61,8 +58,8 @@ public class Map implements Serializable {
         LatLng coord = event.getLatlng();
          
         if (addresses != null && !addresses.isEmpty()) {
-            centerRevGeoMap = coord.getLat() + "," + coord.getLng();
-            revGeoModel.addOverlay(new Marker(coord, addresses.get(0)));
+            centerGeoMap = coord.getLat() + "," + coord.getLng();
+            geoModel.addOverlay(new Marker(coord, addresses.get(0)));
         }
     }
  
@@ -70,17 +67,8 @@ public class Map implements Serializable {
         return geoModel;
     }
  
-    public MapModel getRevGeoModel() {
-        return revGeoModel;
-    }
- 
     public String getCenterGeoMap() {
         return centerGeoMap;
     }
- 
-    public String getCenterRevGeoMap() {
-        return centerRevGeoMap;
-    }
-   
     
 }

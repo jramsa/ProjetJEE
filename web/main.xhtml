@@ -14,7 +14,7 @@
         <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBuI_3Kfm_8nN-h1KyfSYlttKFnin3_N-c" type="text/javascript"></script>
         <script type="text/javascript">
             function geocode() {
-                alert(document.getElementById('address').value);
+                //alert(document.getElementById('address').value);
                 PF('geoMap').geocode(document.getElementById('address').value);
             }
 
@@ -33,8 +33,8 @@
 
             <table class="centre">
                 <tr>
-                    <td class="gras">Projet JEE</td>
-                    <td class="colonne">Login
+                    <td class="gras">ProjetJEE : Application pour trouver des cafés à moins d'1 euro et des spots Wifi à Paris</td>
+                    <td class="colonne">Bonjour #{login.user.firstname}
                         <h:graphicImage value="img/log.png" class="logo" /></td>
                 </tr>
             </table>
@@ -44,7 +44,6 @@
                     <tr>
                         <td class="colonne2">
                             <p:inputText placeholder="Entrez un lieu" style="width:80%" id="address" />
-                            <p:commandButton icon="ui-icon-search" onclick="geocode()" type="button" />
                         </td>
                         <td class="colonne2">
                             <p:selectOneMenu  style="width:80%">
@@ -63,17 +62,17 @@
                             </p:selectOneMenu>
                         </td>
                         <td class="colonne2" style="width:10%">
-                            <h:graphicImage value="img/loupe.png" class="logo" />
-                        </td>
-                        <td class="colonne2" style="width:15%">
                             <h:outputText value="Favoris " class="texteDroite"/>
                             <p:selectBooleanCheckbox />
+                        </td>
+                        <td class="colonne2" style="width:15%">
+                            <p:commandButton value="Chercher" icon="ui-icon-search" onclick="geocode()" type="button" />
                         </td>
                     </tr>
                 </table><br/><br/>
 
                 <f:view contentType="text/html">
-                    <p:gmap id="geoGmap" widgetVar="geoMap" center="48.866667, 2.333333" zoom="2" type="ROADMAP" style="width:100%;height:500px" model="#{map.geoModel}">
+                    <p:gmap id="geoGmap" widgetVar="geoMap" center="#{map.centerGeoMap}" zoom="15" type="ROADMAP" style="width:100%;height:500px" model="#{map.geoModel}">
                         <p:ajax event="geocode" listener="#{map.onGeocode}" update="@this" />
                     </p:gmap>
                 </f:view>

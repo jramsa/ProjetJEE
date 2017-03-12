@@ -56,6 +56,7 @@ public class Login implements Serializable {
                 } catch (IOException ex) {
                     Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
                 }
+                setUser(tmp);
                 return "main";
             } else {
                 user.setFirstname("");
