@@ -6,9 +6,11 @@
 package Sessions;
 
 import Entities.Cafe;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 /**
  *
@@ -27,6 +29,11 @@ public class CafeFacade extends AbstractFacade<Cafe> {
 
     public CafeFacade() {
         super(Cafe.class);
+    }
+    
+    public List<Cafe> cafeListTous(){
+        Query query = em.createNamedQuery("Cafe.findAll",Cafe.class);
+        return query.getResultList();    
     }
     
 }
