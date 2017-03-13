@@ -5,19 +5,17 @@
  */
 package Sessions;
 
-import Entities.HotspotWifi;
-import java.util.List;
+import Entities.History;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 
 /**
  *
  * @author Jerry
  */
 @Stateless
-public class HotspotWifiFacade extends AbstractFacade<HotspotWifi> {
+public class HistoryFacade extends AbstractFacade<History> {
 
     @PersistenceContext(unitName = "ProjetJEEPU")
     private EntityManager em;
@@ -27,13 +25,8 @@ public class HotspotWifiFacade extends AbstractFacade<HotspotWifi> {
         return em;
     }
 
-    public HotspotWifiFacade() {
-        super(HotspotWifi.class);
-    }
-    
-    public List<HotspotWifi> wifiListTous(){
-        Query query = em.createNamedQuery("HotspotWifi.findAll",HotspotWifi.class);
-        return query.getResultList();    
+    public HistoryFacade() {
+        super(History.class);
     }
     
 }
