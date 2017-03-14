@@ -14,15 +14,7 @@
         <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBuI_3Kfm_8nN-h1KyfSYlttKFnin3_N-c" type="text/javascript"></script>
         <script type="text/javascript">
             function geocode() {
-                //alert(document.getElementById('address').value);
                 PF('geoMap').geocode(document.getElementById('address').value);
-            }
-
-            function reverseGeocode() {
-                var lat = document.getElementById('lat').value,
-                        lng = document.getElementById('lng').value;
-
-                PF('revGeoMap').reverseGeocode(lat, lng);
             }
         </script>
     </h:head>
@@ -44,29 +36,30 @@
                     <tr>
                         <td class="colonne2">
                             <p:inputText placeholder="Entrez un lieu" style="width:80%" id="address" />
+                            <p:commandButton icon="ui-icon-search" onclick="geocode()" />
                         </td>
                         <td class="colonne2">
-                            <p:selectOneMenu  style="width:80%">
-                                <f:selectItem itemLabel="S&eacute;lectionner un type" noSelectionOption="true" />
-                                <f:selectItem itemLabel="Caf&eacute;" itemValue="Café" />
-                                <f:selectItem itemLabel="Hotspot" itemValue="Hotspot" />
-                                <f:selectItem itemLabel="Caf&eacute; + Hotspot" itemValue="Café + Hotspot" />
+                            <p:selectOneMenu  style="width:80%" id="spot" value="#{map.spot}">
+                                <f:selectItem itemLabel="S&eacute;lectionner un type" noSelectionOption="true"/>
+                                <f:selectItem itemLabel="Caf&eacute;" itemValue="cafe" />
+                                <f:selectItem itemLabel="Hotspot" itemValue="hotspot_wifi" />
+                                <f:selectItem itemLabel="Caf&eacute; + Hotspot" itemValue="tous" />
                             </p:selectOneMenu>
                         </td>
                         <td class="colonne2">
-                            <p:selectOneMenu  style="width:80%">
-                                <f:selectItem itemLabel="S&eacute;lectionner une distance" noSelectionOption="true" />
-                                <f:selectItem itemLabel="+ proche" itemValue="+ proche" />
-                                <f:selectItem itemLabel="500 m" itemValue="500 m" />
-                                <f:selectItem itemLabel="1 km" itemValue="1 km" />
+                            <p:selectOneMenu  style="width:80%" id="distance" value="#{map.distance}">
+                                <f:selectItem itemLabel="S&eacute;lectionner une distance" noSelectionOption="true"/>
+                                <f:selectItem itemLabel="500 m" itemValue="500" />
+                                <f:selectItem itemLabel="1 km" itemValue="1km" />
+                                <f:selectItem itemLabel="Tous" itemValue="tous" />
                             </p:selectOneMenu>
                         </td>
                         <td class="colonne2" style="width:10%">
                             <h:outputText value="Favoris " class="texteDroite"/>
-                            <p:selectBooleanCheckbox />
+                            <p:selectBooleanCheckbox value="#{map.check}" />
                         </td>
                         <td class="colonne2" style="width:15%">
-                            <p:commandButton value="Chercher" icon="ui-icon-search" onclick="geocode()" type="button" />
+                            <p:commandButton value="Envoyer" icon="ui-icon-search" actionListener="#{map.placeMarkers()}" update="geoGmap"/>
                         </td>
                     </tr>
                 </table><br/><br/>
@@ -74,6 +67,13 @@
                 <f:view contentType="text/html">
                     <p:gmap id="geoGmap" widgetVar="geoMap" center="#{map.centerGeoMap}" zoom="15" type="ROADMAP" style="width:100%;height:500px" model="#{map.geoModel}">
                         <p:ajax event="geocode" listener="#{map.onGeocode}" update="@this" />
+                        <p:ajax event="overlaySelect" listener="#{map.onMarkerSelect}" />
+                        <p:gmapInfoWindow id="infoWindow">
+                            <p:outputPanel style="text-align: center; display: block; margin: auto">
+                                <h:outputText value="#{map.marker.title}" />
+                            </p:outputPanel>
+                        </p:gmapInfoWindow>
+                        
                     </p:gmap>
                 </f:view>
 
