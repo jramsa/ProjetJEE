@@ -9,7 +9,7 @@
     <h:head>
         <title>Projet JEE</title>
         <link rel="stylesheet" type="text/css" href="style/style.css" media="all" />
-        <style>
+        <style>           
         </style>
         <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBuI_3Kfm_8nN-h1KyfSYlttKFnin3_N-c" type="text/javascript"></script>
         <script type="text/javascript">
@@ -17,14 +17,36 @@
                 PF('geoMap').geocode(document.getElementById('address').value);
             }
         </script>
+        <script>
+            function openNav() {
+                document.getElementById("mySidenav").style.width = "250px";
+                document.getElementById("main").style.marginLeft = "250px";
+            }
+
+            function closeNav() {
+                document.getElementById("mySidenav").style.width = "0";
+                document.getElementById("main").style.marginLeft = "0";
+            }
+        </script>
     </h:head>
 
     <h:body>
+
+        <div id="mySidenav" class="sidenav">
+            <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+            <span class="souligne">Historique</span>
+            <br/>#{login.user.firstname}
+            
+            <br/><br/><span class="souligne">Favoris</span>
+            <br/>Clients
+            <br/>Contact
+        </div>
 
         <div class="bod">
 
             <table class="centre">
                 <tr>
+                    <td class="colonne"><span class="gras" onclick="openNav()">&#9776; Historique</span></td>
                     <td class="gras">ProjetJEE : Application pour trouver des cafés à moins d'1 euro et des spots Wifi à Paris</td>
                     <td class="colonne">Bonjour #{login.user.firstname}
                         <h:graphicImage value="img/log.png" class="logo" /></td>
@@ -77,7 +99,6 @@
                 </f:view>
 
             </h:form>
-
         </div>
 
     </h:body>
