@@ -36,7 +36,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     , @NamedQuery(name = "History.findByDate", query = "SELECT h FROM History h WHERE h.date = :date")
     , @NamedQuery(name = "History.findByType", query = "SELECT h FROM History h WHERE h.type = :type")
     , @NamedQuery(name = "History.findBySearch", query = "SELECT h FROM History h WHERE h.search = :search")
-    , @NamedQuery(name = "History.findByRange", query = "SELECT h FROM History h WHERE h.range = :range")
+    , @NamedQuery(name = "History.findByDistance", query = "SELECT h FROM History h WHERE h.distance = :distance")
     , @NamedQuery(name = "History.findByBookmarked", query = "SELECT h FROM History h WHERE h.bookmarked = :bookmarked")})
 public class History implements Serializable {
 
@@ -68,8 +68,9 @@ public class History implements Serializable {
     private String search;
     @Basic(optional = false)
     @NotNull
-    @Column(name = "range")
-    private int range;
+    @Size(min = 1, max = 10)
+    @Column(name = "distance")
+    private String distance;
     @Basic(optional = false)
     @NotNull
     @Column(name = "bookmarked")
@@ -82,13 +83,13 @@ public class History implements Serializable {
         this.id = id;
     }
 
-    public History(Integer id, String user, Date date, String type, String search, int range, boolean bookmarked) {
+    public History(Integer id, String user, Date date, String type, String search, String distance, boolean bookmarked) {
         this.id = id;
         this.user = user;
         this.date = date;
         this.type = type;
         this.search = search;
-        this.range = range;
+        this.distance = distance;
         this.bookmarked = bookmarked;
     }
 
@@ -132,12 +133,12 @@ public class History implements Serializable {
         this.search = search;
     }
 
-    public int getRange() {
-        return range;
+    public String getDistance() {
+        return distance;
     }
 
-    public void setRange(int range) {
-        this.range = range;
+    public void setDistance(String distance) {
+        this.distance = distance;
     }
 
     public boolean getBookmarked() {

@@ -29,4 +29,8 @@ public class HistoryFacade extends AbstractFacade<History> {
         super(History.class);
     }
     
+    public void createHistory(History h){
+            em.persist(h);
+    }
+    
 }

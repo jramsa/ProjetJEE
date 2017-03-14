@@ -6,8 +6,10 @@
 package Controllers;
 
 import Entities.Cafe;
+import Entities.History;
 import Entities.HotspotWifi;
 import Sessions.CafeFacade;
+import Sessions.HistoryFacade;
 import Sessions.HotspotWifiFacade;
 import javax.inject.Named;
 import java.io.Serializable;
@@ -15,7 +17,9 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.enterprise.context.SessionScoped;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.SessionScoped;
 import org.primefaces.model.map.DefaultMapModel;
 import org.primefaces.model.map.LatLng;
 import org.primefaces.model.map.MapModel;
@@ -31,11 +35,11 @@ import org.primefaces.model.map.GeocodeResult;
  */
 @Named(value = "map")
 @SessionScoped
+@ManagedBean
 public class Map implements Serializable {
 
     public Map() {
-        cafe = new Cafe();
-        wifi = new HotspotWifi();
+        history = new History();
 
     }
 
@@ -111,13 +115,19 @@ public class Map implements Serializable {
 
     @EJB
     HotspotWifiFacade wifiFacade;
+    
+    @EJB
+    HistoryFacade historyFacade;
+    
+    @ManagedProperty("#{login}")
+    private Login login;
 
-    private Cafe cafe;
-    private HotspotWifi wifi;
+    private History history;
 
     private String spot;
     private String distance;
     private boolean check;
+    private String localisation;
 
     private List<Cafe> cafeList = new ArrayList<>();
 
@@ -146,8 +156,18 @@ public class Map implements Serializable {
         geoModel = new DefaultMapModel();
         List<Cafe> cafeTmp = new ArrayList<>();
         List<HotspotWifi> wifiTmp = new ArrayList<>();
-
-        if (spot.equals("cafe") && distance.equals("500")) {
+        
+        //insertion de la recherche dans la base, table history
+        String user = getLogin().getUser().getEmail();
+        history.setUser(user);
+        history.setBookmarked(check);
+        history.setDate(new java.util.Date());
+        history.setDistance(distance);
+        history.setSearch(localisation);
+        history.setType(spot);
+        historyFacade.createHistory(history);
+       
+        if (spot.equals("Café") && distance.equals("500 m")) {
             cafeListTous();
             for (Cafe cafes : cafeList) {
                 lat = Double.parseDouble(cafes.getLat().replace(",", "."));
@@ -162,7 +182,7 @@ public class Map implements Serializable {
                 geoModel.addOverlay(new Marker(new LatLng(lat, lon), cafestmp.getCafeName()+" - "+ cafestmp.getAddress()+" - "+ cafestmp.getDistrict()));
             }
         }
-        else if (spot.equals("cafe") && distance.equals("1km")) {
+        else if (spot.equals("Café") && distance.equals("1 km")) {
             cafeListTous();
             for (Cafe cafes : cafeList) {
                 lat = Double.parseDouble(cafes.getLat().replace(",", "."));
@@ -177,7 +197,7 @@ public class Map implements Serializable {
                 geoModel.addOverlay(new Marker(new LatLng(lat, lon), cafestmp.getCafeName()+" - "+ cafestmp.getAddress()+" - "+ cafestmp.getDistrict()));
             }
         }
-        else if (spot.equals("hotspot_wifi") && distance.equals("500")) {
+        else if (spot.equals("Hotspot") && distance.equals("500 m")) {
             wifiListTous();
             for (HotspotWifi wifis : wifiList) {
                 lat = Double.parseDouble(wifis.getLat().replace(",", "."));
@@ -198,7 +218,7 @@ public class Map implements Serializable {
                 geoModel.addOverlay(new Marker(new LatLng(lat, lon), wifistmp.getSiteName()+" - "+ wifistmp.getAddress()+" - "+ wifistmp.getDistrict(),"", "http://maps.google.com/mapfiles/ms/micons/blue-dot.png"));
             }
         }
-        else if (spot.equals("hotspot_wifi") && distance.equals("1km")) {
+        else if (spot.equals("Hotspot") && distance.equals("1 km")) {
             wifiListTous();
             for (HotspotWifi wifis : wifiList) {
                 lat = Double.parseDouble(wifis.getLat().replace(",", "."));
@@ -219,14 +239,14 @@ public class Map implements Serializable {
                 geoModel.addOverlay(new Marker(new LatLng(lat, lon), wifistmp.getSiteName()+" - "+ wifistmp.getAddress()+" - "+ wifistmp.getDistrict(),"", "http://maps.google.com/mapfiles/ms/micons/blue-dot.png"));
             }
         }
-        else if (spot.equals("cafe") && distance.equals("tous")) {
+        else if (spot.equals("Café") && distance.equals("tous")) {
             cafeListTous();
             for (Cafe cafes : cafeList) {
                 lat = Double.parseDouble(cafes.getLat().replace(",", "."));
                 lon = Double.parseDouble(cafes.getLon().replace(",", "."));
                 geoModel.addOverlay(new Marker(new LatLng(lat, lon), cafes.getCafeName()+"-"+ cafes.getAddress()+"-"+ cafes.getDistrict()));
             }
-        } else if (spot.equals("hotspot_wifi") && distance.equals("tous")) {
+        } else if (spot.equals("Hotspot") && distance.equals("tous")) {
             wifiListTous();
             for (HotspotWifi wifis : wifiList) {
                 lat = Double.parseDouble(wifis.getLat().replace(",", "."));
@@ -239,7 +259,7 @@ public class Map implements Serializable {
                 geoModel.addOverlay(circle);*/
                 geoModel.addOverlay(new Marker(new LatLng(lat, lon), wifis.getSiteName()+" - "+ wifis.getAddress()+" - "+ wifis.getDistrict(),"", "http://maps.google.com/mapfiles/ms/micons/blue-dot.png"));
             }
-        } else if (spot.equals("tous") && distance.equals("tous")) {
+        } else if (spot.equals("Café + Hotspot") && distance.equals("tous")) {
             cafeListTous();
             for (Cafe cafes : cafeList) {
                 lat = Double.parseDouble(cafes.getLat().replace(",", "."));
@@ -259,7 +279,7 @@ public class Map implements Serializable {
                 geoModel.addOverlay(new Marker(new LatLng(lat, lon), wifis.getSiteName()+" - "+ wifis.getAddress()+" - "+ wifis.getDistrict(),"", "http://maps.google.com/mapfiles/ms/micons/blue-dot.png"));
             }
         }
-        else if (spot.equals("tous") && distance.equals("500")) {
+        else if (spot.equals("Café + Hotspot") && distance.equals("500 m")) {
             cafeListTous();
             for (Cafe cafes : cafeList) {
                 lat = Double.parseDouble(cafes.getLat().replace(",", "."));
@@ -293,7 +313,7 @@ public class Map implements Serializable {
                 geoModel.addOverlay(new Marker(new LatLng(lat, lon), wifistmp.getSiteName()+" - "+ wifistmp.getAddress()+" - "+ wifistmp.getDistrict(),"", "http://maps.google.com/mapfiles/ms/micons/blue-dot.png"));
             }
         }
-        else if (spot.equals("tous") && distance.equals("1km")) {
+        else if (spot.equals("Café + Hotspot") && distance.equals("1 km")) {
             cafeListTous();
             for (Cafe cafes : cafeList) {
                 lat = Double.parseDouble(cafes.getLat().replace(",", "."));
@@ -343,22 +363,6 @@ public class Map implements Serializable {
         return marker;
     }
 
-    public Cafe getCafe() {
-        return cafe;
-    }
-
-    public void setCafe(Cafe cafe) {
-        this.cafe = cafe;
-    }
-
-    public HotspotWifi getWifi() {
-        return wifi;
-    }
-
-    public void setWifi(HotspotWifi wifi) {
-        this.wifi = wifi;
-    }
-
     public String getSpot() {
         return spot;
     }
@@ -397,6 +401,48 @@ public class Map implements Serializable {
 
     public void setWifiList(List<HotspotWifi> wifiList) {
         this.wifiList = wifiList;
+    }
+
+    /**
+     * @return the login
+     */
+    public Login getLogin() {
+        return login;
+    }
+
+    /**
+     * @param login the login to set
+     */
+    public void setLogin(Login login) {
+        this.login = login;
+    }
+
+    /**
+     * @return the history
+     */
+    public History getHistory() {
+        return history;
+    }
+
+    /**
+     * @param history the history to set
+     */
+    public void setHistory(History history) {
+        this.history = history;
+    }
+
+    /**
+     * @return the localisation
+     */
+    public String getLocalisation() {
+        return localisation;
+    }
+
+    /**
+     * @param localisation the localisation to set
+     */
+    public void setLocalisation(String localisation) {
+        this.localisation = localisation;
     }
 
 }
