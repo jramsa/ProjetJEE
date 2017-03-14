@@ -21,7 +21,8 @@ import org.primefaces.model.map.LatLng;
 import org.primefaces.model.map.MapModel;
 import org.primefaces.model.map.Marker;
 import org.primefaces.event.map.GeocodeEvent;
-import org.primefaces.event.map.ReverseGeocodeEvent;
+import org.primefaces.event.map.OverlaySelectEvent;
+import org.primefaces.model.map.Circle;
 import org.primefaces.model.map.GeocodeResult;
 
 /**
@@ -31,57 +32,41 @@ import org.primefaces.model.map.GeocodeResult;
 @Named(value = "map")
 @SessionScoped
 public class Map implements Serializable {
-   
+
     public Map() {
         cafe = new Cafe();
         wifi = new HotspotWifi();
-       
+
     }
-     
+
     private MapModel geoModel;
     private String centerGeoMap = "48.85661400000001, 2.3522219000000177";
-    
+
     private double posLat;
     private double posLon;
-     
+
     @PostConstruct
     public void init() {
         geoModel = new DefaultMapModel();
     }
-     
-   
+
     public void onGeocode(GeocodeEvent event) {
         List<GeocodeResult> results = event.getResults();
-         
+
         if (results != null && !results.isEmpty()) {
             LatLng center = results.get(0).getLatLng();
             setCenterGeoMap(center.getLat() + "," + center.getLng());
-            
+
             setPosLat(center.getLat());
             setPosLon(center.getLng());
-            System.out.println("Centre :" + posLat+" "+ posLon);
-             
-            /*for (int i = 0; i < results.size(); i++) {
-                GeocodeResult result = results.get(i);
-                geoModel.addOverlay(new Marker(result.getLatLng(), result.getAddress()));
-            }*/
+            System.out.println("Centre :" + posLat + " " + posLon);
         }
     }
-     
-    public void onReverseGeocode(ReverseGeocodeEvent event) {
-        List<String> addresses = event.getAddresses();
-        LatLng coord = event.getLatlng();
-         
-        if (addresses != null && !addresses.isEmpty()) {
-            setCenterGeoMap(coord.getLat() + "," + coord.getLng());
-            geoModel.addOverlay(new Marker(coord, addresses.get(0)));
-        }
-    }
- 
+
     public MapModel getGeoModel() {
         return geoModel;
     }
- 
+
     public String getCenterGeoMap() {
         return centerGeoMap;
     }
@@ -120,9 +105,11 @@ public class Map implements Serializable {
     public void setCenterGeoMap(String centerGeoMap) {
         this.centerGeoMap = centerGeoMap;
     }
-    
+
     @EJB
     CafeFacade cafeFacade;
+
+    @EJB
     HotspotWifiFacade wifiFacade;
 
     private Cafe cafe;
@@ -131,31 +118,229 @@ public class Map implements Serializable {
     private String spot;
     private String distance;
     private boolean check;
-    
+
     private List<Cafe> cafeList = new ArrayList<>();
-    
-    public List<Cafe> cafeListTous(){
-        cafeList=cafeFacade.cafeListTous();
+
+    public List<Cafe> cafeListTous() {
+        cafeList = cafeFacade.cafeListTous();
         return getCafeList();
     }
-    
-    public void truc(){
-         Double lat;
-         Double lon;
+
+    private List<HotspotWifi> wifiList = new ArrayList<>();
+
+    public List<HotspotWifi> wifiListTous() {
+        wifiList = wifiFacade.wifiListTous();
+        return getWifiList();
+    }
+
+    public double dist(double xa, double ya, double xb, double yb) {
+        double distance = Math.sqrt(Math.pow((xb - xa), 2) + Math.pow((yb - ya), 2));
+        return distance;
+    }
+
+    public void placeMarkers() {
+        Double lat;
+        Double lon;
+
+        //reinitialise carte
+        geoModel = new DefaultMapModel();
+        List<Cafe> cafeTmp = new ArrayList<>();
+        List<HotspotWifi> wifiTmp = new ArrayList<>();
+
+        if (spot.equals("cafe") && distance.equals("500")) {
+            cafeListTous();
+            for (Cafe cafes : cafeList) {
+                lat = Double.parseDouble(cafes.getLat().replace(",", "."));
+                lon = Double.parseDouble(cafes.getLon().replace(",", "."));
+                if (dist( lat, lon,posLat, posLon) < 0.005) {
+                    cafeTmp.add(cafes);
+                }
+            }
+            for (Cafe cafestmp : cafeTmp) {
+                lat = Double.parseDouble(cafestmp.getLat().replace(",", "."));
+                lon = Double.parseDouble(cafestmp.getLon().replace(",", "."));
+                geoModel.addOverlay(new Marker(new LatLng(lat, lon), cafestmp.getCafeName()+" - "+ cafestmp.getAddress()+" - "+ cafestmp.getDistrict()));
+            }
+        }
+        else if (spot.equals("cafe") && distance.equals("1km")) {
+            cafeListTous();
+            for (Cafe cafes : cafeList) {
+                lat = Double.parseDouble(cafes.getLat().replace(",", "."));
+                lon = Double.parseDouble(cafes.getLon().replace(",", "."));
+                if (dist( lat, lon,posLat, posLon) < 0.01) {
+                    cafeTmp.add(cafes);
+                }
+            }
+            for (Cafe cafestmp : cafeTmp) {
+                lat = Double.parseDouble(cafestmp.getLat().replace(",", "."));
+                lon = Double.parseDouble(cafestmp.getLon().replace(",", "."));
+                geoModel.addOverlay(new Marker(new LatLng(lat, lon), cafestmp.getCafeName()+" - "+ cafestmp.getAddress()+" - "+ cafestmp.getDistrict()));
+            }
+        }
+        else if (spot.equals("hotspot_wifi") && distance.equals("500")) {
+            wifiListTous();
+            for (HotspotWifi wifis : wifiList) {
+                lat = Double.parseDouble(wifis.getLat().replace(",", "."));
+                lon = Double.parseDouble(wifis.getLon().replace(",", "."));
+                if (dist( lat, lon,posLat, posLon) < 0.005) {
+                    wifiTmp.add(wifis);
+                }
+            }
+            for (HotspotWifi wifistmp : wifiTmp) {
+                lat = Double.parseDouble(wifistmp.getLat().replace(",", "."));
+                lon = Double.parseDouble(wifistmp.getLon().replace(",", "."));
+                /*Circle circle = new Circle(new LatLng(lat, lon), 90);
+                circle.setStrokeColor("#1E90FF");
+                circle.setFillColor("#1E90FF");
+                circle.setStrokeOpacity(0.5);
+                circle.setFillOpacity(0.5);
+                geoModel.addOverlay(circle);*/
+                geoModel.addOverlay(new Marker(new LatLng(lat, lon), wifistmp.getSiteName()+" - "+ wifistmp.getAddress()+" - "+ wifistmp.getDistrict(),"", "http://maps.google.com/mapfiles/ms/micons/blue-dot.png"));
+            }
+        }
+        else if (spot.equals("hotspot_wifi") && distance.equals("1km")) {
+            wifiListTous();
+            for (HotspotWifi wifis : wifiList) {
+                lat = Double.parseDouble(wifis.getLat().replace(",", "."));
+                lon = Double.parseDouble(wifis.getLon().replace(",", "."));
+                if (dist( lat, lon,posLat, posLon) < 0.01) {
+                    wifiTmp.add(wifis);
+                }
+            }
+            for (HotspotWifi wifistmp : wifiTmp) {
+                lat = Double.parseDouble(wifistmp.getLat().replace(",", "."));
+                lon = Double.parseDouble(wifistmp.getLon().replace(",", "."));
+                /*Circle circle = new Circle(new LatLng(lat, lon), 90);
+                circle.setStrokeColor("#1E90FF");
+                circle.setFillColor("#1E90FF");
+                circle.setStrokeOpacity(0.5);
+                circle.setFillOpacity(0.5);
+                geoModel.addOverlay(circle);*/
+                geoModel.addOverlay(new Marker(new LatLng(lat, lon), wifistmp.getSiteName()+" - "+ wifistmp.getAddress()+" - "+ wifistmp.getDistrict(),"", "http://maps.google.com/mapfiles/ms/micons/blue-dot.png"));
+            }
+        }
+        else if (spot.equals("cafe") && distance.equals("tous")) {
+            cafeListTous();
+            for (Cafe cafes : cafeList) {
+                lat = Double.parseDouble(cafes.getLat().replace(",", "."));
+                lon = Double.parseDouble(cafes.getLon().replace(",", "."));
+                geoModel.addOverlay(new Marker(new LatLng(lat, lon), cafes.getCafeName()+"-"+ cafes.getAddress()+"-"+ cafes.getDistrict()));
+            }
+        } else if (spot.equals("hotspot_wifi") && distance.equals("tous")) {
+            wifiListTous();
+            for (HotspotWifi wifis : wifiList) {
+                lat = Double.parseDouble(wifis.getLat().replace(",", "."));
+                lon = Double.parseDouble(wifis.getLon().replace(",", "."));
+                /*Circle circle = new Circle(new LatLng(lat, lon), 90);
+                circle.setStrokeColor("#1E90FF");
+                circle.setFillColor("#1E90FF");
+                circle.setStrokeOpacity(0.5);
+                circle.setFillOpacity(0.5);
+                geoModel.addOverlay(circle);*/
+                geoModel.addOverlay(new Marker(new LatLng(lat, lon), wifis.getSiteName()+" - "+ wifis.getAddress()+" - "+ wifis.getDistrict(),"", "http://maps.google.com/mapfiles/ms/micons/blue-dot.png"));
+            }
+        } else if (spot.equals("tous") && distance.equals("tous")) {
+            cafeListTous();
+            for (Cafe cafes : cafeList) {
+                lat = Double.parseDouble(cafes.getLat().replace(",", "."));
+                lon = Double.parseDouble(cafes.getLon().replace(",", "."));
+                geoModel.addOverlay(new Marker(new LatLng(lat, lon), cafes.getCafeName()+" - "+ cafes.getAddress()+" - "+ cafes.getDistrict()));
+            }
+            wifiListTous();
+            for (HotspotWifi wifis : wifiList) {
+                lat = Double.parseDouble(wifis.getLat().replace(",", "."));
+                lon = Double.parseDouble(wifis.getLon().replace(",", "."));
+                /*Circle circle = new Circle(new LatLng(lat, lon), 90);
+                circle.setStrokeColor("#1E90FF");
+                circle.setFillColor("#1E90FF");
+                circle.setStrokeOpacity(0.5);
+                circle.setFillOpacity(0.5);
+                geoModel.addOverlay(circle);*/
+                geoModel.addOverlay(new Marker(new LatLng(lat, lon), wifis.getSiteName()+" - "+ wifis.getAddress()+" - "+ wifis.getDistrict(),"", "http://maps.google.com/mapfiles/ms/micons/blue-dot.png"));
+            }
+        }
+        else if (spot.equals("tous") && distance.equals("500")) {
+            cafeListTous();
+            for (Cafe cafes : cafeList) {
+                lat = Double.parseDouble(cafes.getLat().replace(",", "."));
+                lon = Double.parseDouble(cafes.getLon().replace(",", "."));
+                if (dist( lat, lon,posLat, posLon) < 0.005) {
+                    cafeTmp.add(cafes);
+                }
+            }
+            for (Cafe cafestmp : cafeTmp) {
+                lat = Double.parseDouble(cafestmp.getLat().replace(",", "."));
+                lon = Double.parseDouble(cafestmp.getLon().replace(",", "."));
+                geoModel.addOverlay(new Marker(new LatLng(lat, lon), cafestmp.getCafeName()+" - "+ cafestmp.getAddress()+" - "+ cafestmp.getDistrict()));
+            }
+            wifiListTous();
+            for (HotspotWifi wifis : wifiList) {
+                lat = Double.parseDouble(wifis.getLat().replace(",", "."));
+                lon = Double.parseDouble(wifis.getLon().replace(",", "."));
+                if (dist( lat, lon,posLat, posLon) < 0.005) {
+                    wifiTmp.add(wifis);
+                }
+            }
+            for (HotspotWifi wifistmp : wifiTmp) {
+                lat = Double.parseDouble(wifistmp.getLat().replace(",", "."));
+                lon = Double.parseDouble(wifistmp.getLon().replace(",", "."));
+                /*Circle circle = new Circle(new LatLng(lat, lon), 90);
+                circle.setStrokeColor("#1E90FF");
+                circle.setFillColor("#1E90FF");
+                circle.setStrokeOpacity(0.5);
+                circle.setFillOpacity(0.5);
+                geoModel.addOverlay(circle);*/
+                geoModel.addOverlay(new Marker(new LatLng(lat, lon), wifistmp.getSiteName()+" - "+ wifistmp.getAddress()+" - "+ wifistmp.getDistrict(),"", "http://maps.google.com/mapfiles/ms/micons/blue-dot.png"));
+            }
+        }
+        else if (spot.equals("tous") && distance.equals("1km")) {
+            cafeListTous();
+            for (Cafe cafes : cafeList) {
+                lat = Double.parseDouble(cafes.getLat().replace(",", "."));
+                lon = Double.parseDouble(cafes.getLon().replace(",", "."));
+                if (dist( lat, lon,posLat, posLon) < 0.01) {
+                    cafeTmp.add(cafes);
+                }
+            }
+            for (Cafe cafestmp : cafeTmp) {
+                lat = Double.parseDouble(cafestmp.getLat().replace(",", "."));
+                lon = Double.parseDouble(cafestmp.getLon().replace(",", "."));
+                geoModel.addOverlay(new Marker(new LatLng(lat, lon), cafestmp.getCafeName()+" - "+ cafestmp.getAddress()+" - "+ cafestmp.getDistrict()));
+            }
+            wifiListTous();
+            for (HotspotWifi wifis : wifiList) {
+                lat = Double.parseDouble(wifis.getLat().replace(",", "."));
+                lon = Double.parseDouble(wifis.getLon().replace(",", "."));
+                if (dist( lat, lon,posLat, posLon) < 0.01) {
+                    wifiTmp.add(wifis);
+                }
+            } 
+            for (HotspotWifi wifistmp : wifiTmp) {
+                lat = Double.parseDouble(wifistmp.getLat().replace(",", "."));
+                lon = Double.parseDouble(wifistmp.getLon().replace(",", "."));
+                /*Circle circle = new Circle(new LatLng(lat, lon), 90);
+                circle.setStrokeColor("#1E90FF");
+                circle.setFillColor("#1E90FF");
+                circle.setStrokeOpacity(0.5);
+                circle.setFillOpacity(0.5);
+                geoModel.addOverlay(circle);*/
+                geoModel.addOverlay(new Marker(new LatLng(lat, lon), wifistmp.getSiteName()+" - "+ wifistmp.getAddress()+" - "+ wifistmp.getDistrict(),"", "http://maps.google.com/mapfiles/ms/micons/blue-dot.png"));
+            }
+        }
         
-        System.out.println(spot);
-        System.out.println(distance);
-        if(spot.equals("cafe") && distance.equals("tous")){
-        cafeListTous();
-        for ( Cafe cafes : cafeList ){
-            lat=Double.parseDouble(cafes.getLat().replace(",", "."));
-            lon=Double.parseDouble(cafes.getLon().replace(",", "."));
-            geoModel.addOverlay(new Marker(new LatLng(lat, lon),cafes.getCafeName()));
-        }
-        }
-        else{
+        else {
             System.out.println("Choix non codé");
         }
+    }
+    
+    private Marker marker;
+    
+    public void onMarkerSelect(OverlaySelectEvent event) {
+        marker = (Marker) event.getOverlay();
+    }
+    
+    public Marker getMarker() {
+        return marker;
     }
 
     public Cafe getCafe() {
@@ -204,6 +389,14 @@ public class Map implements Serializable {
 
     public void setCafeList(List<Cafe> cafeList) {
         this.cafeList = cafeList;
-    } 
-    
+    }
+
+    public List<HotspotWifi> getWifiList() {
+        return wifiList;
+    }
+
+    public void setWifiList(List<HotspotWifi> wifiList) {
+        this.wifiList = wifiList;
+    }
+
 }
