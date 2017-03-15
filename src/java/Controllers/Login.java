@@ -9,11 +9,12 @@ import Entities.User;
 import Sessions.UserFacade;
 import java.io.IOException;
 import javax.inject.Named;
-import javax.enterprise.context.SessionScoped;
 import java.io.Serializable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import org.primefaces.context.RequestContext;
 
@@ -23,6 +24,7 @@ import org.primefaces.context.RequestContext;
  */
 @Named(value = "login")
 @SessionScoped
+@ManagedBean
 public class Login implements Serializable {
 
     @EJB
