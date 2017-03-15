@@ -444,5 +444,83 @@ public class Map implements Serializable {
     public void setLocalisation(String localisation) {
         this.localisation = localisation;
     }
+    
+    private List<History> histories = new ArrayList<>();
+
+    public List<History> historiesList() {
+        histories = historyFacade.historiesList(getLogin().getUser().getEmail());
+        return histories;
+    }
+    
+    private List<History> favoris = new ArrayList<>();
+
+    public List<History> favorisList() {
+        favoris = historyFacade.favorisList(getLogin().getUser().getEmail());
+        return favoris;
+    }
+    
+    public void loadData(){
+        historiesList();
+        favorisList();
+    }
+    
+    public void removeData(){
+        System.out.println(selectedHist);
+        History h = historyFacade.find(selectedHist.getId());
+        historyFacade.deleteHistory(h);
+        historiesList();
+        selectedHist = null;
+    }
+    
+    public void updateData(){
+        System.out.println(selectedHist);
+        historyFacade.updateFav(selectedHist.getId());
+        favorisList();
+        selectedHist = null;    
+    }
+    
+    private History selectedHist;
+
+    /**
+     * @return the histories
+     */
+    public List<History> getHistories() {
+        return histories;
+    }
+
+    /**
+     * @param histories the histories to set
+     */
+    public void setHistories(List<History> histories) {
+        this.histories = histories;
+    }
+
+    /**
+     * @return the favoris
+     */
+    public List<History> getFavoris() {
+        return favoris;
+    }
+
+    /**
+     * @param favoris the favoris to set
+     */
+    public void setFavoris(List<History> favoris) {
+        this.favoris = favoris;
+    }
+
+    /**
+     * @return the selectedHist
+     */
+    public History getSelectedHist() {
+        return selectedHist;
+    }
+
+    /**
+     * @param selectedHist the selectedHist to set
+     */
+    public void setSelectedHist(History selectedHist) {
+        this.selectedHist = selectedHist;
+    }
 
 }

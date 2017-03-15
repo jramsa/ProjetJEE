@@ -32,11 +32,12 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "History.findAll", query = "SELECT h FROM History h")
     , @NamedQuery(name = "History.findById", query = "SELECT h FROM History h WHERE h.id = :id")
-    , @NamedQuery(name = "History.findByUser", query = "SELECT h FROM History h WHERE h.user = :user")
+    , @NamedQuery(name = "History.findByUser", query = "SELECT h FROM History h WHERE h.user = :user ORDER BY h.date DESC")
     , @NamedQuery(name = "History.findByDate", query = "SELECT h FROM History h WHERE h.date = :date")
     , @NamedQuery(name = "History.findByType", query = "SELECT h FROM History h WHERE h.type = :type")
     , @NamedQuery(name = "History.findBySearch", query = "SELECT h FROM History h WHERE h.search = :search")
     , @NamedQuery(name = "History.findByDistance", query = "SELECT h FROM History h WHERE h.distance = :distance")
+    , @NamedQuery(name = "History.findByFav", query = "SELECT h FROM History h WHERE h.user = :user AND h.bookmarked = :bookmarked ORDER BY h.date DESC")
     , @NamedQuery(name = "History.findByBookmarked", query = "SELECT h FROM History h WHERE h.bookmarked = :bookmarked")})
 public class History implements Serializable {
 

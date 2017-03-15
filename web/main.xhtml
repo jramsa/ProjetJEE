@@ -19,34 +19,75 @@
         </script>
         <script>
             function openNav() {
-                document.getElementById("mySidenav").style.width = "250px";
-                document.getElementById("main").style.marginLeft = "250px";
+                document.getElementById("mySidenav").style.width = "500px";
+                document.getElementById("bod").style.marginLeft = "250px";
             }
 
             function closeNav() {
                 document.getElementById("mySidenav").style.width = "0";
-                document.getElementById("main").style.marginLeft = "0";
+                document.getElementById("bod").style.marginLeft = "0";
             }
         </script>
     </h:head>
 
     <h:body>
 
-        <div id="mySidenav" class="sidenav">
+        <div id="mySidenav" class="sidenav" width="800px;">
             <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-            <span class="souligne">Historique</span>
-            <br/>#{login.user.firstname}
+            <span class="gras"> Historique #{login.user.firstname}</span>
+
+            <br/><br/><span class="souligne">Historique</span>
+            <h:form>
+            <p:dataTable id="h" var="h" value="#{map.historiesList()}" rowKey="#{h.id}" selection="#{map.selectedHist}" selectionMode="single">
+                <p:column headerText="Adresse">
+                    <p:outputLabel value="#{h.search}"></p:outputLabel>
+                </p:column>
+                <p:column headerText="Type">
+                    <p:outputLabel value="#{h.type}"></p:outputLabel>
+                </p:column>
+                <p:column headerText="Distance">
+                    <p:outputLabel value="#{h.distance}"></p:outputLabel>
+                </p:column>
+                <p:column headerText="Date">
+                    <p:outputLabel value="#{h.date}"></p:outputLabel>
+                </p:column>
+            </p:dataTable> 
             
+            <p:contextMenu for="h">
+                <p:menuitem value="Supprimer de l'historique" update="h" icon="ui-icon-close" actionListener="#{map.removeData()}"/>
+            </p:contextMenu>
+            </h:form>
+            
+
             <br/><br/><span class="souligne">Favoris</span>
-            <br/>Clients
-            <br/>Contact
+            <h:form>
+            <p:dataTable id="f" var="f" value="#{map.favorisList()}" rowKey="#{f.id}" selection="#{map.selectedHist}" selectionMode="single">
+                <p:column headerText="Adresse">
+                    <p:outputLabel value="#{f.search}"></p:outputLabel>
+                </p:column>
+                <p:column headerText="Type">
+                    <p:outputLabel value="#{f.type}"></p:outputLabel>
+                </p:column>
+                <p:column headerText="Distance">
+                    <p:outputLabel value="#{f.distance}"></p:outputLabel>
+                </p:column>
+                <p:column headerText="Date">
+                    <p:outputLabel value="#{f.date}"></p:outputLabel>
+                </p:column>
+            </p:dataTable> 
+            <p:contextMenu for="f">
+                <p:menuitem value="Supprimer des favoris" update="f" icon="ui-icon-close" actionListener="#{map.updateData()}"/>
+            </p:contextMenu>
+            </h:form>
         </div>
 
         <div class="bod">
 
             <table class="centre">
                 <tr>
-                    <td class="colonne"><span class="gras" onclick="openNav()">&#9776; Historique</span></td>
+                    <td class="colonne">
+                        <span class="gras" onclick="openNav()">&#9776; Historique</span>
+                    </td>
                     <td class="gras">ProjetJEE : Application pour trouver des cafés à moins d'1 euro et des spots Wifi à Paris</td>
                     <td class="colonne">Bonjour #{login.user.firstname}
                         <h:graphicImage value="img/log.png" class="logo" /></td>
