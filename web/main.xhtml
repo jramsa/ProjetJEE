@@ -54,7 +54,8 @@
             </p:dataTable> 
             
             <p:contextMenu for="h">
-                <p:menuitem value="Supprimer de l'historique" update="h" icon="ui-icon-close" actionListener="#{map.removeData()}"/>
+                <p:menuitem value="Supprimer" update="h" icon="ui-icon-close" actionListener="#{map.removeData()}"/>
+                <p:menuitem value="Chercher à nouveau" update="h" icon="ui-icon-search" actionListener="#{map.searchData()}"/>
             </p:contextMenu>
             </h:form>
             

@@ -11,6 +11,7 @@ import Entities.HotspotWifi;
 import Sessions.CafeFacade;
 import Sessions.HistoryFacade;
 import Sessions.HotspotWifiFacade;
+import java.io.IOException;
 import javax.inject.Named;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
 import org.primefaces.model.map.DefaultMapModel;
 import org.primefaces.model.map.LatLng;
 import org.primefaces.model.map.MapModel;
@@ -148,7 +150,7 @@ public class Map implements Serializable {
         return distance;
     }
 
-    public void placeMarkers() {
+    public void placeMarkers() throws IOException {
         Double lat;
         Double lon;
 
@@ -166,6 +168,9 @@ public class Map implements Serializable {
         history.setSearch(localisation);
         history.setType(spot);
         historyFacade.createHistory(history);
+        
+        //rafraichir la page pour l'historique
+        FacesContext.getCurrentInstance().getExternalContext().redirect("faces/main.xhtml");
        
         if (spot.equals("Café") && distance.equals("500 m")) {
             cafeListTous();
@@ -459,11 +464,6 @@ public class Map implements Serializable {
         return favoris;
     }
     
-    public void loadData(){
-        historiesList();
-        favorisList();
-    }
-    
     public void removeData(){
         System.out.println(selectedHist);
         History h = historyFacade.find(selectedHist.getId());
@@ -480,6 +480,13 @@ public class Map implements Serializable {
     }
     
     private History selectedHist;
+    
+    public void searchData() throws IOException{
+        localisation = selectedHist.getSearch();
+        spot = selectedHist.getType();
+        distance = selectedHist.getDistance();
+        FacesContext.getCurrentInstance().getExternalContext().redirect("faces/main.xhtml");
+    }
 
     /**
      * @return the histories
