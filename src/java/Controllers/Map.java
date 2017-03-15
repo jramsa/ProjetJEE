@@ -169,9 +169,12 @@ public class Map implements Serializable {
         history.setType(spot);
         historyFacade.createHistory(history);
         
+        //decocher la case favoris
+        setCheck(false);
+        
         //rafraichir la page pour l'historique
-        FacesContext.getCurrentInstance().getExternalContext().redirect("faces/main.xhtml");
-       
+        FacesContext.getCurrentInstance().getExternalContext().redirect("main.xhtml");
+        
         if (spot.equals("Café") && distance.equals("500 m")) {
             cafeListTous();
             for (Cafe cafes : cafeList) {
@@ -485,7 +488,22 @@ public class Map implements Serializable {
         localisation = selectedHist.getSearch();
         spot = selectedHist.getType();
         distance = selectedHist.getDistance();
-        FacesContext.getCurrentInstance().getExternalContext().redirect("faces/main.xhtml");
+        setCheck(false);
+        FacesContext.getCurrentInstance().getExternalContext().redirect("main.xhtml");
+    }
+    
+    public void logout() throws IOException{
+        getLogin().getUser().setEmail("");
+        getLogin().getUser().setFirstname("");
+        getLogin().getUser().setLastname("");
+        setLocalisation("");
+        setSpot("");
+        setDistance("");
+        setCheck(false);
+        geoModel = new DefaultMapModel();
+        centerGeoMap = "48.85661400000001, 2.3522219000000177";
+        FacesContext.getCurrentInstance().getExternalContext().redirect("index.xhtml");
+        //ApplicationManager
     }
 
     /**
