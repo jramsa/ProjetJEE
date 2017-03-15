@@ -78,6 +78,7 @@
             </p:dataTable> 
             <p:contextMenu for="f">
                 <p:menuitem value="Supprimer des favoris" update="f" icon="ui-icon-close" actionListener="#{map.updateData()}"/>
+                <p:menuitem value="Chercher à nouveau" update="f" icon="ui-icon-search" actionListener="#{map.searchData()}"/>
             </p:contextMenu>
             </h:form>
         </div>
@@ -86,12 +87,17 @@
 
             <table class="centre">
                 <tr>
-                    <td class="colonne">
+                    <td width="15%">
                         <span class="gras" onclick="openNav()">&#9776; Historique</span>
                     </td>
                     <td class="gras">ProjetJEE : Application pour trouver des cafés à moins d'1 euro et des spots Wifi à Paris</td>
-                    <td class="colonne">Bonjour #{login.user.firstname}
-                        <h:graphicImage value="img/log.png" class="logo" /></td>
+                    <td width="25%">
+                        <h:form>
+                            Bonjour #{login.user.firstname}
+                        <p:commandButton value="Déconnexion"  actionListener="#{map.logout()}" ajax="false" />
+                        <!--<h:graphicImage value="img/log.png" class="logo" />-->
+                        </h:form>
+                        </td>
                 </tr>
             </table>
 
