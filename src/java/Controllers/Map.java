@@ -11,6 +11,7 @@ import Entities.HotspotWifi;
 import Sessions.CafeFacade;
 import Sessions.HistoryFacade;
 import Sessions.HotspotWifiFacade;
+import Sessions.SessionManager;
 import java.io.IOException;
 import javax.inject.Named;
 import java.io.Serializable;
@@ -18,17 +19,18 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpSession;
 import org.primefaces.model.map.DefaultMapModel;
 import org.primefaces.model.map.LatLng;
 import org.primefaces.model.map.MapModel;
 import org.primefaces.model.map.Marker;
 import org.primefaces.event.map.GeocodeEvent;
 import org.primefaces.event.map.OverlaySelectEvent;
-import org.primefaces.model.map.Circle;
 import org.primefaces.model.map.GeocodeResult;
 
 /**
@@ -493,17 +495,13 @@ public class Map implements Serializable {
     }
     
     public void logout() throws IOException{
-        getLogin().getUser().setEmail("");
-        getLogin().getUser().setFirstname("");
-        getLogin().getUser().setLastname("");
         setLocalisation("");
         setSpot("");
         setDistance("");
         setCheck(false);
         geoModel = new DefaultMapModel();
         centerGeoMap = "48.85661400000001, 2.3522219000000177";
-        FacesContext.getCurrentInstance().getExternalContext().redirect("index.xhtml");
-        //ApplicationManager
+        getLogin().logout();
     }
 
     /**
