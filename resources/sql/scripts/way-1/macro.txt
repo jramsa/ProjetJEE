@@ -1,0 +1,14 @@
+Sub coupe()
+
+Range("H2").Select
+Do While ActiveCell <> ""
+wTxt = ActiveCell.Value
+wSepare = InStr(wTxt, ",")
+wGauche = Left$(wTxt, wSepare - 1)
+wDroite = Right$(wTxt, Len(wTxt) - wSepare - 1)
+ActiveCell.Value = wGauche
+ActiveCell.Offset(0, 1).Value = wDroite
+ActiveCell.Offset(1, 0).Select
+Loop
+
+End Sub

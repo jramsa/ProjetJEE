@@ -1,12 +1,154 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Insert title here</title>
-</head>
-<body>
-	<DIV id="head"></DIV>
-	<DIV id="map"></DIV>
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" 
+      xmlns:h="http://xmlns.jcp.org/jsf/html" 
+      xmlns:p="http://primefaces.org/ui"   
+      xmlns:f="http://xmlns.jcp.org/jsf/core" 
+      lang="en" xml:lang="en">
 
-</body>
+    <h:head>
+        <title>Projet JEE</title>
+        <link rel="stylesheet" type="text/css" href="style/style.css" media="all" />
+        <style>           
+        </style>
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBuI_3Kfm_8nN-h1KyfSYlttKFnin3_N-c" type="text/javascript"></script>
+        <script type="text/javascript">
+            function geocode() {
+                PF('geoMap').geocode(document.getElementById('address').value);
+            }
+        </script>
+        <script>
+            function openNav() {
+                document.getElementById("mySidenav").style.width = "500px";
+                document.getElementById("bod").style.marginLeft = "250px";
+            }
+
+            function closeNav() {
+                document.getElementById("mySidenav").style.width = "0";
+                document.getElementById("bod").style.marginLeft = "0";
+            }
+        </script>
+    </h:head>
+
+    <h:body>
+
+        <div id="mySidenav" class="sidenav" width="800px;">
+            <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+            <span class="gras"> Historique #{login.user.firstname}</span>
+
+            <br/><br/><span class="souligne">Historique</span>
+            <h:form>
+            <p:dataTable id="h" var="h" value="#{map.historiesList()}" rowKey="#{h.id}" selection="#{map.selectedHist}" selectionMode="single">
+                <p:column headerText="Adresse">
+                    <p:outputLabel value="#{h.search}"></p:outputLabel>
+                </p:column>
+                <p:column headerText="Type">
+                    <p:outputLabel value="#{h.type}"></p:outputLabel>
+                </p:column>
+                <p:column headerText="Distance">
+                    <p:outputLabel value="#{h.distance}"></p:outputLabel>
+                </p:column>
+                <p:column headerText="Date">
+                    <p:outputLabel value="#{h.date}"></p:outputLabel>
+                </p:column>
+            </p:dataTable> 
+            
+            <p:contextMenu for="h">
+                <p:menuitem value="Supprimer" update="h" icon="ui-icon-close" actionListener="#{map.removeData()}"/>
+                <p:menuitem value="Chercher à nouveau" update="h" icon="ui-icon-search" actionListener="#{map.searchData()}"/>
+            </p:contextMenu>
+            </h:form>
+            
+
+            <br/><br/><span class="souligne">Favoris</span>
+            <h:form>
+            <p:dataTable id="f" var="f" value="#{map.favorisList()}" rowKey="#{f.id}" selection="#{map.selectedHist}" selectionMode="single">
+                <p:column headerText="Adresse">
+                    <p:outputLabel value="#{f.search}"></p:outputLabel>
+                </p:column>
+                <p:column headerText="Type">
+                    <p:outputLabel value="#{f.type}"></p:outputLabel>
+                </p:column>
+                <p:column headerText="Distance">
+                    <p:outputLabel value="#{f.distance}"></p:outputLabel>
+                </p:column>
+                <p:column headerText="Date">
+                    <p:outputLabel value="#{f.date}"></p:outputLabel>
+                </p:column>
+            </p:dataTable> 
+            <p:contextMenu for="f">
+                <p:menuitem value="Supprimer des favoris" update="f" icon="ui-icon-close" actionListener="#{map.updateData()}"/>
+                <p:menuitem value="Chercher à nouveau" update="f" icon="ui-icon-search" actionListener="#{map.searchData()}"/>
+            </p:contextMenu>
+            </h:form>
+        </div>
+
+        <div class="bod">
+
+            <table class="centre">
+                <tr>
+                    <td width="15%">
+                        <span class="gras" onclick="openNav()">&#9776; Historique</span>
+                    </td>
+                    <td class="gras">ProjetJEE : Application pour trouver des cafés à moins d'1 euro et des spots Wifi à Paris</td>
+                    <td width="25%">
+                        <h:form>
+                            Bonjour #{login.user.firstname}
+                        <p:commandButton value="Déconnexion"  actionListener="#{map.logout()}" ajax="false" />
+                        <!--<h:graphicImage value="img/log.png" class="logo" />-->
+                        </h:form>
+                        </td>
+                </tr>
+            </table>
+
+            <h:form prependId="false">
+                <table class="centre2">
+                    <tr>
+                        <td class="colonne2">
+                            <p:inputText placeholder="Entrez un lieu" style="width:80%" id="address" value="#{map.localisation}" />
+                            <p:commandButton icon="ui-icon-search" onclick="geocode()" />
+                        </td>
+                        <td class="colonne2">
+                            <p:selectOneMenu  style="width:80%" id="spot" value="#{map.spot}">
+                                <f:selectItem itemLabel="S&eacute;lectionner un type" noSelectionOption="true"/>
+                                <f:selectItem itemLabel="Caf&eacute;" itemValue="Café" />
+                                <f:selectItem itemLabel="Hotspot" itemValue="Hotspot" />
+                                <f:selectItem itemLabel="Caf&eacute; + Hotspot" itemValue="Café + Hotspot" />
+                            </p:selectOneMenu>
+                        </td>
+                        <td class="colonne2">
+                            <p:selectOneMenu  style="width:80%" id="distance" value="#{map.distance}">
+                                <f:selectItem itemLabel="S&eacute;lectionner une distance" noSelectionOption="true"/>
+                                <f:selectItem itemLabel="500 m" itemValue="500 m" />
+                                <f:selectItem itemLabel="1 km" itemValue="1 km" />
+                                <f:selectItem itemLabel="Tous" itemValue="tous" />
+                            </p:selectOneMenu>
+                        </td>
+                        <td class="colonne2" style="width:10%">
+                            <h:outputText value="Favoris " class="texteDroite"/>
+                            <p:selectBooleanCheckbox value="#{map.check}" />
+                        </td>
+                        <td class="colonne2" style="width:15%">
+                            <p:commandButton value="Envoyer" icon="ui-icon-search" actionListener="#{map.placeMarkers()}" update="geoGmap"/>
+                        </td>
+                    </tr>
+                </table><br/><br/>
+
+                <f:view contentType="text/html">
+                    <p:gmap id="geoGmap" widgetVar="geoMap" center="#{map.centerGeoMap}" zoom="15" type="ROADMAP" style="width:100%;height:500px" model="#{map.geoModel}">
+                        <p:ajax event="geocode" listener="#{map.onGeocode}" update="@this" />
+                        <p:ajax event="overlaySelect" listener="#{map.onMarkerSelect}" />
+                        <p:gmapInfoWindow id="infoWindow">
+                            <p:outputPanel style="text-align: center; display: block; margin: auto">
+                                <h:outputText value="#{map.marker.title}" />
+                            </p:outputPanel>
+                        </p:gmapInfoWindow>
+                    </p:gmap>
+                </f:view>
+
+            </h:form>
+        </div>
+
+    </h:body>
+
 </html>

@@ -1,0 +1,144 @@
+body{
+    margin: auto;
+    padding: auto;
+    width : 90%;
+    text-align: center;
+}
+
+html{
+    background-color:#76b852;
+}
+
+.colonne{
+    width:15%;
+    text-align: right;
+}
+
+.colonne2{
+    width:25%;
+}
+
+.logo{
+    width: 25px;
+    height: 25px;
+    display : inline-block;
+    line-height:60px;
+    vertical-align: middle;
+    padding-left:  2%;
+}
+
+a:link{
+    text-decoration:none;
+}
+
+a:visited,hover,active{
+    text-decoration:none;
+}
+
+.centre{
+    margin: auto;
+    padding: auto;
+    width : 100%;
+    vertical-align:middle;
+    line-height:60px;   
+}
+
+.centre2{
+    margin: auto;
+    padding: auto;
+    width : 100%;
+    vertical-align:middle;   
+}
+
+.log{
+    margin : auto;
+    border: 1px solid black;
+    margin-top: 2%;
+    width: 90%;
+    height: 150px;
+    padding : 2%;
+    text-align: left;
+    
+}
+
+.form2{
+    margin : auto;
+    margin-top: 2%;
+    width: 80%;
+    padding : 2%;
+    text-align: center;
+    color:#0080FF;
+}
+
+.texteBleu{
+    color:#0080FF;
+}
+
+.texteBlanc{
+    color:white;
+}
+
+.texteNoir{
+    color:black;
+}
+
+.bouton{
+    background-color:#0080FF;
+    text-align: center;
+    display: block;
+    margin: auto;
+    width : 120px;
+    height : 40px;
+    border-radius : 10px;
+    color: white;
+}
+
+.gras{
+    font-weight: bold;
+}
+
+.souligne{
+    text-decoration: underline;
+}
+
+.texteDroite{
+    text-align: right;
+    color:black;
+    vertical-align:middle;
+}
+
+.texteGauche{
+    text-align: left;
+}
+
+.texteCentre{
+    text-align: center;
+}
+
+.sidenav {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: #111;
+    overflow-x: hidden;
+    transition: 0.5s;
+    padding-top: 60px;
+    padding-bottom: 60px;
+    color: white;
+}
+
+.sidenav .closebtn {
+    position: absolute;
+    top: 0;
+    right: 25px;
+    font-size: 36px;
+    margin-left: 50px;
+}
+
+@media screen and (max-height: 450px) {
+  .sidenav {padding-top: 15px;}
+  .sidenav a {font-size: 18px;}
+}
