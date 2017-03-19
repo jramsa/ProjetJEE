@@ -6,6 +6,7 @@
 package Controllers;
 
 import Entities.User;
+import Sessions.SessionManager;
 import Sessions.UserFacade;
 import java.io.IOException;
 import javax.inject.Named;
@@ -13,9 +14,11 @@ import java.io.Serializable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpSession;
 import org.primefaces.context.RequestContext;
 
 /**
@@ -52,7 +55,7 @@ public class Login implements Serializable {
             setPassword(this.getUser().getPassword());
             if (SecurityManager.sha1(getPassword()).equals((tmp.getPassword()))) {
                 System.out.println("Vrai");
-                //ApplicationManager.getSession().setAttribute("user", user);
+                SessionManager.getSession().setAttribute("user", user);
                 try {
                     FacesContext.getCurrentInstance().getExternalContext().redirect("faces/main.xhtml");
                 } catch (IOException ex) {
@@ -104,6 +107,23 @@ public class Login implements Serializable {
             }
             return "index";
         }
+    }
+    
+    //TOCHECK:
+    public String logout() {
+        FacesContext context = FacesContext.getCurrentInstance();
+        HttpSession session = SessionManager.getSession();
+        session.invalidate();
+        context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Bye bye" + this.user.getEmail(), null));
+        try {
+            context.getExternalContext().redirect("index.xhtml");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        this.user.setEmail("");
+        this.user.setFirstname("");
+        this.user.setLastname("");
+        return "index";
     }
 
     /**
