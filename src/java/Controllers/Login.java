@@ -116,7 +116,7 @@ public class Login implements Serializable {
         session.invalidate();
         context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Bye bye" + this.user.getEmail(), null));
         try {
-            context.getExternalContext().redirect("index.xhtml");
+            context.getExternalContext().redirect("faces/index.xhtml");
         } catch (IOException e) {
             e.printStackTrace();
         }
