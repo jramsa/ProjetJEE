@@ -25,6 +25,7 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
+import org.primefaces.context.RequestContext;
 import org.primefaces.model.map.DefaultMapModel;
 import org.primefaces.model.map.LatLng;
 import org.primefaces.model.map.MapModel;
@@ -475,6 +476,7 @@ public class Map implements Serializable {
         historyFacade.deleteHistory(h);
         historiesList();
         selectedHist = null;
+        RequestContext.getCurrentInstance().update("fav");
     }
     
     public void updateData(){
